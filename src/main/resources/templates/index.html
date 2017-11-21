@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>SimpleCryptography</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script type="text/javascript" src="js/main.js"/>
+</head>
+<body>
+    <h2>1.) Generate keys</h2>
+    <label>Secret key:</label>
+    <br></br>
+    <textarea cols="50" rows="10"  th:text = "${secretKey}"></textarea>
+    <br></br>
+    <label>Public key:</label>
+    <br></br>
+    <textarea cols="50" rows="10" th:text = "${publicKey}"></textarea>
+    <br></br>
+    <label>Private key:</label>
+    <br></br>
+    <textarea cols="50" rows="10" th:text = "${privateKey}"></textarea>
+
+    <input type="button" value="Generate" onclick="location.href='/keys'"></input>
+</body>
+</html>
