@@ -22,7 +22,8 @@ public class IndexController {
         return "index";
     }
 
-    @RequestMapping("/keys")
+
+    @RequestMapping(value="/", params = "actionGenerateKeys")
     public String generateKeys(Model model){
         keyService.onGenerate();
         model.addAttribute("publicKey", keyService.getPublicKey());
