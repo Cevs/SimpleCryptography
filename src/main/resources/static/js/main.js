@@ -1,4 +1,8 @@
 $('document').ready(function(){
+
+    encrypt = 1;
+    decrypt = 0;
+
     $("#chooseFile").bind('change',function () {
         var filename = $("#chooseFile").val();
         if (/^\s*$/.test(filename)) {
@@ -20,9 +24,39 @@ $('document').ready(function(){
         fire_ajax_submit();
     });
 
+    $("#btnAsymmetricEncrypt").click(function (event) {
+       event.preventDefault();
+       $("#btnAsymmetricDecrypt").removeClass("active");
+       $("#btnAsymmetricEncrypt").addClass("active");
+       fire_ajax_asymmetric(encrypt);
+
+
+    });
+
+    $("#btnAsymmetricDecrypt").click(function(event){
+        event.preventDefault();
+        $("#btnAsymmetricEncrypt").removeClass("active");
+        $("#btnAsymmetricDecrypt").addClass("active");
+        fire_ajax_asymmetric(decrypt);
+    });
 });
 
 
+function  fire_ajax_asymmetric(type){
+    $.ajax({
+       type:"POST",
+        url:"/api/asymmetric",
+        data:{
+           type: type
+        },
+        success:function(data){
+           $("#fileText").val(data)
+        },
+        error:function (e) {
+            console.log("ERROR : ",e);
+        }
+    });
+}
 
 function fire_ajax_submit(){
     //Get Form

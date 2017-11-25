@@ -12,10 +12,13 @@ public class IndexController {
 
     private KeyService keyService;
 
+
     @Autowired
     public void setKeyService(KeyService keyService) {
         this.keyService = keyService;
     }
+
+
 
     @RequestMapping("/")
     public String index(){
@@ -31,4 +34,5 @@ public class IndexController {
         model.addAttribute("secretKey", keyService.getSecretKey());
         return "index";
     }
+
 }

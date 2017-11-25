@@ -27,11 +27,12 @@
             <textarea cols="50" rows="10" th:text = "${privateKey}"></textarea>
 
             <form method="post">
-                <input type = "submit" name="actionGenerateKeys" value="generate"></input>
+                <input  type="submit" value="Generate" class="button"  name="actionGenerateKeys"/>
             </form>
+            <br></br>
 
             <h2>2.) Kriptiranje sadržaja</h2>
-
+            <br></br>
             <form method="POST" enctype="multipart/form-data" id="fileUploadForm">
                 <div class="file-upload">
                     <div class="file-select">
@@ -42,7 +43,13 @@
                 </div>
                 <input  type="submit" value="Submit" id="btnSubmit"/>
             </form>
-            <textarea id="fileText" cols="50" rows="10"></textarea>
+            <textarea id="fileText" cols="50" rows="10" th:text = "${fileText}"></textarea>
+
+            <form method="post">
+                <input id="btnAsymmetricEncrypt" type="submit" value="Asymmetric Encrypt" class="button"/>
+                <input id="btnAsymmetricDecrypt" type="submit" value="Asymmetric Decrypt" class="button"/>
+            </form>
+
 
             <br></br>
 

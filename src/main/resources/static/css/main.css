@@ -12,7 +12,7 @@ body {
     background-color: #dce4ec;
     color: black;
     border: none;
-
+    width:20%;
     padding: 0 17px;
     text-align: center;
     text-decoration: none;
@@ -20,6 +20,29 @@ body {
     font-size: 12px;
     height: 40px;
     line-height: 40px;
+}
+
+.button{
+    background-color: #dce4ec;
+    color: black;
+    border: none;
+    padding: 0 17px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 12px;
+    height: 40px;
+    line-height: 40px;
+}
+
+.button:hover{
+    background-color: #34495e;
+    color: white;
+}
+
+.button.active{
+    background-color: #3fa46a;
+    color: white;
 }
 
 #btnSubmit:hover{
@@ -39,7 +62,7 @@ body {
 /****** CODE ******/
 
 .file-upload{display:block;text-align:center;font-family: Helvetica, Arial, sans-serif;font-size: 12px;}
-.file-upload .file-select{display:block;border: 2px solid #dce4ec;color: #34495e;cursor:pointer;height:40px; width: 314px;line-height:40px;text-align:left;background:#FFFFFF;overflow:hidden;position:relative;}
+.file-upload .file-select{display:block;border: 2px solid #dce4ec;color: #34495e;cursor:pointer;height:40px; width: 80%;line-height:40px;text-align:left;background:#FFFFFF;overflow:hidden;position:relative;}
 .file-upload .file-select .file-select-button{background:#dce4ec;padding:0 10px;display:inline-block;height:40px;line-height:40px;}
 .file-upload .file-select .file-select-name{line-height:40px; display:inline-block;padding:0 10px;}
 .file-upload .file-select:hover{border-color:#34495e;transition:all .2s ease-in-out;-moz-transition:all .2s ease-in-out;-webkit-transition:all .2s ease-in-out;-o-transition:all .2s ease-in-out;}
