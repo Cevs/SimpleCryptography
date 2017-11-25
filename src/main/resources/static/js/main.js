@@ -3,6 +3,11 @@ $('document').ready(function(){
     encrypt = 1;
     decrypt = 0;
 
+    $("#btnGenerateKeys").click(function (event) {
+        event.preventDefault();
+        fire_ajax_generate_keys();
+    })
+
     $("#chooseFile").bind('change',function () {
         var filename = $("#chooseFile").val();
         if (/^\s*$/.test(filename)) {
@@ -41,6 +46,20 @@ $('document').ready(function(){
     });
 });
 
+function fire_ajax_generate_keys(){
+    $.ajax({
+       type:"POST",
+       url:"/api/keys",
+       success:function (data) {
+           $("#secretKey").val(data.SecretKey);
+           $("#publicKey").val(data.PublicKey);
+           $("#privateKey").val(data.PrivateKey);
+       },
+        error:function(e){
+           console.log("Error: ",e);
+        }
+    });
+}
 
 function  fire_ajax_asymmetric(type){
     $.ajax({

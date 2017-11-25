@@ -21,7 +21,9 @@ public class AsymmetricCryptography {
     private PrivateKey privateKey;
     private PublicKey publicKey;
 
-    public AsymmetricCryptography() throws NoSuchAlgorithmException, NoSuchPaddingException, Exception{
+    public AsymmetricCryptography() { }
+
+    public void Initialize() throws NoSuchAlgorithmException, NoSuchPaddingException, Exception{
         this.cipher = Cipher.getInstance("RSA");
         this.privateKey = getPrivate(privateKeyPath);
         this.publicKey = getPublic(publicKeyPath);
@@ -73,8 +75,8 @@ public class AsymmetricCryptography {
     public String encryptFile(){
         String text = "Fail in encryption";
         try{
-            encryptFile(getFileInBytes(new File("MyFiles/text.txt")), new File("MyFiles/text_encrypted.txt"), privateKey);
-            text = getFileText("MyFiles/text_encrypted.txt");
+            encryptFile(getFileInBytes(new File("MyFiles/text.txt")), new File("MyFiles/text_asymmetric_encrypted.txt"), privateKey);
+            text = getFileText("MyFiles/text_asymmetric_encrypted.txt");
         }catch (Exception e){}
 
         return text;
@@ -83,8 +85,8 @@ public class AsymmetricCryptography {
     public String decryptFile() {
         String text = "Fail in decryption";
         try {
-            decryptFile(getFileInBytes(new File("MyFiles/text_encrypted.txt")), new File ("MyFiles/text_decrypted.txt"), publicKey);
-            text = getFileText("MyFiles/text_decrypted.txt");
+            decryptFile(getFileInBytes(new File("MyFiles/text_asymmetric_encrypted.txt")), new File ("MyFiles/text_asymmetric_decrypted.txt"), publicKey);
+            text = getFileText("MyFiles/text_asymmetric_decrypted.txt");
         }catch (Exception e){}
 
         return text;

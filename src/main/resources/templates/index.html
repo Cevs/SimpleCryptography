@@ -16,18 +16,18 @@
             <h2>1.) Generate keys</h2>
             <label>Secret key:</label>
             <br></br>
-            <textarea cols="50" rows="10"  th:text = "${secretKey}"></textarea>
+            <textarea id="secretKey" cols="50" rows="10"  ></textarea>
             <br></br>
             <label>Public key:</label>
             <br></br>
-            <textarea cols="50" rows="10" th:text = "${publicKey}"></textarea>
+            <textarea id="publicKey" cols="50" rows="10"></textarea>
             <br></br>
             <label>Private key:</label>
             <br></br>
-            <textarea cols="50" rows="10" th:text = "${privateKey}"></textarea>
+            <textarea id="privateKey" cols="50" rows="10"></textarea>
 
             <form method="post">
-                <input  type="submit" value="Generate" class="button"  name="actionGenerateKeys"/>
+                <input  id ="btnGenerateKeys" type="submit" value="Generate" class="button" />
             </form>
             <br></br>
 
