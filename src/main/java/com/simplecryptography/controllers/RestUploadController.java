@@ -29,7 +29,7 @@ public class RestUploadController {
     private final Logger logger = LoggerFactory.getLogger(RestUploadController.class);
 
     //Save the uploaded file to this folder
-    private static String UPLOADED_FOLDER = "C://fakultet//SimpleCryptography//UploadFiles//";
+    private static String UPLOADED_FOLDER = "MyFiles/";
 
     //Single file upload
     @PostMapping("/api/upload")
@@ -76,7 +76,7 @@ public class RestUploadController {
         try {
 
             saveUploadedFiles(Arrays.asList(uploadFiles));
-            textOfFile = getTextFromFile(UPLOADED_FOLDER + uploadFiles[0].getOriginalFilename());
+            textOfFile = getTextFromFile(UPLOADED_FOLDER + "text.txt");
 
         } catch (IOException e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -112,7 +112,7 @@ public class RestUploadController {
             }
 
             byte[] bytes = file.getBytes();
-            Path path = Paths.get(UPLOADED_FOLDER + file.getOriginalFilename());
+            Path path = Paths.get(UPLOADED_FOLDER + "text.txt");
             Files.write(path, bytes);
 
         }
