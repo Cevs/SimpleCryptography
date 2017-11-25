@@ -1,6 +1,8 @@
 package com.simplecryptography.domain;
 
 import org.springframework.stereotype.Component;
+import sun.misc.BASE64Decoder;
+import sun.misc.BASE64Encoder;
 
 import javax.crypto.*;
 import javax.crypto.spec.SecretKeySpec;
@@ -9,6 +11,7 @@ import java.nio.file.Files;
 import java.security.*;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
+import java.util.Base64;
 
 @Component
 public class Cryptography {
@@ -60,33 +63,34 @@ public class Cryptography {
 
     public void encryptFileAsymmetric(byte[] input, File output, PrivateKey privateKey) throws IOException, GeneralSecurityException{
         this.asymmetricCipher.init(Cipher.ENCRYPT_MODE, privateKey);
-        writeToFile(output, this.asymmetricCipher.doFinal(input));
+        writeToFile(output, Base64.getEncoder().encodeToString(asymmetricCipher.doFinal(input)));
     }
 
-
-    public void decryptFileAsymmetric(byte[] input, File output, PublicKey publicKey) throws IOException, GeneralSecurityException{
+    public void decryptFileAsymmetric(String text, File output, PublicKey publicKey) throws IOException, GeneralSecurityException{
         this.asymmetricCipher.init(Cipher.DECRYPT_MODE, publicKey);
-        writeToFile(output, this.asymmetricCipher.doFinal(input));
-    }
-
-    public void decryptFileSymmetric(byte[] input, File output, SecretKey secretKey) throws IOException, GeneralSecurityException{
-        this.symmetricCipher.init(Cipher.DECRYPT_MODE, secretKey);
-        writeToFile(output, this.symmetricCipher.doFinal(input));
+        String t2 =  new String (asymmetricCipher.doFinal(Base64.getDecoder().decode(text)));
+        writeToFile(output,new String (asymmetricCipher.doFinal(Base64.getDecoder().decode(text))));
     }
 
     public void encryptFileSymmetric(byte[] input, File output, SecretKey secretKey) throws IOException, GeneralSecurityException{
         this.symmetricCipher.init(Cipher.ENCRYPT_MODE,secretKey);
-        writeToFile(output, this.symmetricCipher.doFinal(input));
+        writeToFile(output, Base64.getEncoder().encodeToString(symmetricCipher.doFinal(input)));
     }
 
-    private void writeToFile(File output, byte[] toWrite) throws IllegalBlockSizeException, BadPaddingException, IOException{
-        FileOutputStream fos = new FileOutputStream(output);
-        fos.write(toWrite);
-        fos.flush();
-        fos.close();
+    public void decryptFileSymmetric(String text, File output, SecretKey secretKey) throws IOException, GeneralSecurityException{
+        this.symmetricCipher.init(Cipher.DECRYPT_MODE, secretKey);
+        writeToFile(output, new String (symmetricCipher.doFinal(Base64.getDecoder().decode(text))));
     }
 
 
+
+    private void writeToFile(File output, String text) throws IllegalBlockSizeException, BadPaddingException, IOException{
+
+        FileWriter fileWriter = new FileWriter(output);
+        fileWriter.write(text);
+        fileWriter.close();
+
+    }
 
     public byte[] getFileInBytes(File f) throws IOException{
         FileInputStream fis = new FileInputStream(f);
@@ -95,7 +99,6 @@ public class Cryptography {
         fis.close();
         return fileBytes;
     }
-
 
     public String encryptFile(int type){
         String text = "Fail in encryption";
@@ -118,11 +121,12 @@ public class Cryptography {
         String text = "Fail in decryption";
         try {
             if(type == ASYMMETRIC){
-                decryptFileAsymmetric(getFileInBytes(new File("MyFiles/text_asymmetric_encrypted.txt")), new File ("MyFiles/text_asymmetric_decrypted.txt"), publicKey);
+
+                decryptFileAsymmetric(getFileText("MyFiles/text_asymmetric_encrypted.txt"), new File ("MyFiles/text_asymmetric_decrypted.txt"), publicKey);
                 text = getFileText("MyFiles/text_asymmetric_decrypted.txt");
             }
             else if (type==SYMMETRIC){
-                decryptFileSymmetric(getFileInBytes(new File("MyFiles/text_symmetric_encrypted.txt")),new File("MyFiles/text_symmetric_decrypted.txt"), secretKey);
+                decryptFileSymmetric(getFileText("MyFiles/text_symmetric_encrypted.txt"),new File("MyFiles/text_symmetric_decrypted.txt"), secretKey);
                 text = getFileText("MyFiles/text_symmetric_decrypted.txt");
             }
 
