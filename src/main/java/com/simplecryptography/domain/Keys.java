@@ -49,6 +49,7 @@ public class Keys {
 
             saveToFile("KeyPair/publicKey", publicKey.getEncoded());
             saveToFile("KeyPair/privateKey", privateKey.getEncoded());
+            saveToFile("KeyPair/secretKey", secretKey.getEncoded());
 
             String path = "GeneratedKeys/";
             saveKeyToFile(path, sPublicKey ,PUBLIC_KEY);
