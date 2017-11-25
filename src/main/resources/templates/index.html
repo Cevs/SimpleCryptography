@@ -33,24 +33,39 @@
 
             <h2>2.) Kriptiranje sadržaja</h2>
             <br></br>
-            <form method="POST" enctype="multipart/form-data" id="fileUploadForm">
-                <div class="file-upload">
-                    <div class="file-select">
-                        <div class="file-select-button" id="fileName">Choose File</div>
-                        <div class="file-select-name" id="noFile">No file chosen...</div>
-                        <input type="file" name="files" id="chooseFile"></input>
+
+
+            <div class="loadedText">
+
+                <form method="POST" enctype="multipart/form-data" id="fileUploadForm">
+                    <div class="file-upload">
+                        <div class="file-select">
+                            <div class="file-select-button" id="fileName">Choose File</div>
+                            <div class="file-select-name" id="noFile">No file chosen...</div>
+                            <input type="file" name="files" id="chooseFile"></input>
+                        </div>
                     </div>
+                    <input  type="submit" value="Submit" id="btnSubmit"/>
+                </form>
+
+                <div class="asymmetric-part">
+                    <textarea id="fileTextAsymmetric" cols="50" rows="10"></textarea>
+
+                    <form method="post">
+                        <input id="btnAsymmetricEncrypt" type="submit" value="Asymmetric Encrypt" class="button"/>
+                        <input id="btnAsymmetricDecrypt" type="submit" value="Asymmetric Decrypt" class="button"/>
+                    </form>
                 </div>
-                <input  type="submit" value="Submit" id="btnSubmit"/>
-            </form>
-            <textarea id="fileText" cols="50" rows="10" th:text = "${fileText}"></textarea>
+                <div class="symmetric-part">
+                    <textarea id="fileTextSymmetric" cols="50" rows="10"></textarea>
+                    <form method = "post">
+                        <input id = "btnSymmetricEncrypt" type="submit" value="Symmetric Encrypt" class="button"/>
+                        <input id = "btnSymmetricDecrypt" type="submit" value="Symmetric Decrypt" class="button"/>
+                    </form>
+                </div>
 
-            <form method="post">
-                <input id="btnAsymmetricEncrypt" type="submit" value="Asymmetric Encrypt" class="button"/>
-                <input id="btnAsymmetricDecrypt" type="submit" value="Asymmetric Decrypt" class="button"/>
-            </form>
 
-
+            </div>
             <br></br>
 
 

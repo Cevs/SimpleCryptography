@@ -1,7 +1,7 @@
 $('document').ready(function(){
 
-    encrypt = 1;
-    decrypt = 0;
+    encrypt = "Encrypt";
+    decrypt = "Decrypt";
 
     $("#btnGenerateKeys").click(function (event) {
         event.preventDefault();
@@ -15,7 +15,8 @@ $('document').ready(function(){
             $("#btnSubmit").removeClass('active');
             $("#btnSubmit").removeClass('warning');
             $("#noFile").text("No file chosen...");
-            $("#fileText").val("");
+            $("#fileTextAsymmetric").val("");
+            $("#fileTextSymmetric").val("");
         }
         else {
             $(".file-upload").addClass('active');
@@ -44,6 +45,20 @@ $('document').ready(function(){
         $("#btnAsymmetricDecrypt").addClass("active");
         fire_ajax_asymmetric(decrypt);
     });
+
+    $("#btnSymmetricEncrypt").click(function (event) {
+       event.preventDefault();
+        $("#btnSymmetricDecrypt").removeClass("active");
+        $("#btnSymmetricEncrypt").addClass("active");
+       fire_ajax_symmetric(encrypt);
+    });
+
+    $("#btnSymmetricDecrypt").click(function(event){
+       event.preventDefault();
+        $("#btnSymmetricEncrypt").removeClass("active");
+        $("#btnSymmetricDecrypt").addClass("active");
+       fire_ajax_symmetric(decrypt);
+    });
 });
 
 function fire_ajax_generate_keys(){
@@ -61,15 +76,31 @@ function fire_ajax_generate_keys(){
     });
 }
 
-function  fire_ajax_asymmetric(type){
+function fire_ajax_symmetric(operation){
+    $.ajax({
+       type:"POST",
+       url:"/api/symmetric",
+       data:{
+           operation:operation
+       },
+        success:function (data) {
+            $("#fileTextSymmetric").val(data)
+        },
+        error:function(e){
+           console.log("Error: ",e)
+        }
+    });
+}
+
+function  fire_ajax_asymmetric(operation){
     $.ajax({
        type:"POST",
         url:"/api/asymmetric",
         data:{
-           type: type
+           operation: operation
         },
         success:function(data){
-           $("#fileText").val(data)
+           $("#fileTextAsymmetric").val(data)
         },
         error:function (e) {
             console.log("ERROR : ",e);
@@ -105,7 +136,8 @@ function fire_ajax_submit(){
                 $("#btnSubmit").addClass('active');
             }
             $("#btnSubmit").prop("disabled",false);
-            $("#fileText").val(data);
+            $("#fileTextAsymmetric").val(data);
+            $("#fileTextSymmetric").val(data);
         },
         error: function(e){
             $("#result").text(e.resonseText);

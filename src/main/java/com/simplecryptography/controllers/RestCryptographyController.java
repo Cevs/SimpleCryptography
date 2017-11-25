@@ -1,7 +1,6 @@
 package com.simplecryptography.controllers;
 
-import com.fasterxml.jackson.databind.util.JSONPObject;
-import com.simplecryptography.domain.AsymmetricCryptography;
+import com.simplecryptography.domain.Cryptography;
 import com.simplecryptography.domain.Keys;
 import net.minidev.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,17 +10,15 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Dictionary;
-
 @RestController
 public class RestCryptographyController {
 
     private String text;
 
-    private AsymmetricCryptography asymmetricCryptography;
+    private Cryptography cryptography;
     @Autowired
-    public void setAsymmetricCryptography(AsymmetricCryptography asymmetricCryptography){
-        this.asymmetricCryptography = asymmetricCryptography;
+    public void setCryptography(Cryptography cryptography){
+        this.cryptography = cryptography;
     }
 
     private Keys keys;
@@ -42,14 +39,14 @@ public class RestCryptographyController {
     }
 
     @PostMapping("/api/asymmetric")
-    public ResponseEntity<?> asymmetric(@RequestParam("type") Integer type){
+    public ResponseEntity<?> asymmetric(@RequestParam("operation") String operation){
         try{
-            asymmetricCryptography.Initialize();
-            if(type == 1){
-                text = asymmetricCryptography.encryptFile();
+            cryptography.InitializeAsymmetric();
+            if(operation.equals("Encrypt")){
+                text = cryptography.encryptFile(0);
             }
-            else{
-                text = asymmetricCryptography.decryptFile();
+            else if (operation.equals("Decrypt")){
+                text = cryptography.decryptFile(0);
             }
         }catch (Exception e){
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
@@ -58,9 +55,20 @@ public class RestCryptographyController {
         return new ResponseEntity(""+text, HttpStatus.OK);
     }
 
-    @PostMapping("/api/AsymmetricDecrypt")
-    public ResponseEntity<?> asymmetricDecrypt(){
-        String text = asymmetricCryptography.decryptFile();
-        return new ResponseEntity(""+text, HttpStatus.OK);
+    @PostMapping("/api/symmetric")
+    public ResponseEntity<?> symmetric(@RequestParam("operation") String operation){
+        try{
+            cryptography.InitializeSymmetric();
+            if(operation.equals("Encrypt")){
+                text = cryptography.encryptFile(1);
+            }
+            else if(operation.equals("Decrypt")){
+                text = cryptography.decryptFile(1);
+            }
+        }catch (Exception e){
+            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+        }
+
+        return new ResponseEntity(text,HttpStatus.OK);
     }
 }
