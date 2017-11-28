@@ -1,5 +1,6 @@
 package com.simplecryptography.domain;
 
+import org.apache.commons.codec.binary.Hex;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.KeyGenerator;
@@ -73,9 +74,8 @@ public class Keys {
         publicKey = pair.getPublic();
 
         //Convert to String
-        Base64.Encoder encoder = Base64.getEncoder();
-        sPrivateKey = encoder.encodeToString(privateKey.getEncoded());
-        sPublicKey = encoder.encodeToString(publicKey.getEncoded());
+        sPrivateKey = Hex.encodeHexString(privateKey.getEncoded());
+        sPublicKey = Hex.encodeHexString(publicKey.getEncoded());
     }
 
     private void createSecretKey() throws NoSuchAlgorithmException{
@@ -84,8 +84,7 @@ public class Keys {
         secretKey = keyGenerator.generateKey();
 
         //Convert to String
-        Base64.Encoder encoder = Base64.getEncoder();
-        sSecretKey = encoder.encodeToString(secretKey.getEncoded());
+        sSecretKey = Hex.encodeHexString(secretKey.getEncoded());
     }
 
     private void saveToFile(String path, byte[] key) throws IOException{

@@ -1,5 +1,6 @@
 package com.simplecryptography.domain;
 
+import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Hex;
 import org.springframework.stereotype.Component;
 import sun.misc.BASE64Decoder;
@@ -66,23 +67,22 @@ public class Cryptography {
 
     public void encryptFileAsymmetric(byte[] input, File output, PrivateKey privateKey) throws IOException, GeneralSecurityException{
         this.asymmetricCipher.init(Cipher.ENCRYPT_MODE, privateKey);
-        writeToFile(output, Base64.getEncoder().encodeToString(asymmetricCipher.doFinal(input)));
+        writeToFile(output, Hex.encodeHexString(asymmetricCipher.doFinal(input)));
     }
 
-    public void decryptFileAsymmetric(String text, File output, PublicKey publicKey) throws IOException, GeneralSecurityException{
+    public void decryptFileAsymmetric(String text, File output, PublicKey publicKey) throws IOException, GeneralSecurityException, DecoderException {
         this.asymmetricCipher.init(Cipher.DECRYPT_MODE, publicKey);
-        String t2 =  new String (asymmetricCipher.doFinal(Base64.getDecoder().decode(text)));
-        writeToFile(output,new String (asymmetricCipher.doFinal(Base64.getDecoder().decode(text))));
+        writeToFile(output, new String (asymmetricCipher.doFinal(Hex.decodeHex(text.toCharArray()))));
     }
 
     public void encryptFileSymmetric(byte[] input, File output, SecretKey secretKey) throws IOException, GeneralSecurityException{
         this.symmetricCipher.init(Cipher.ENCRYPT_MODE,secretKey);
-        writeToFile(output, Base64.getEncoder().encodeToString(symmetricCipher.doFinal(input)));
+        writeToFile(output, Hex.encodeHexString(symmetricCipher.doFinal(input)));
     }
 
-    public void decryptFileSymmetric(String text, File output, SecretKey secretKey) throws IOException, GeneralSecurityException{
+    public void decryptFileSymmetric(String text, File output, SecretKey secretKey) throws IOException, GeneralSecurityException, DecoderException {
         this.symmetricCipher.init(Cipher.DECRYPT_MODE, secretKey);
-        writeToFile(output, new String (symmetricCipher.doFinal(Base64.getDecoder().decode(text))));
+        writeToFile(output, new String(symmetricCipher.doFinal(Hex.decodeHex(text.toCharArray()))));
     }
 
 
