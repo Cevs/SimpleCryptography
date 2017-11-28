@@ -1,8 +1,11 @@
 package com.simplecryptography.controllers;
 
+import com.simplecryptography.domain.Cryptography;
 import com.simplecryptography.model.UploadModel;
+import net.minidev.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,6 +29,7 @@ import java.util.stream.Collectors;
 
 @RestController
 public class RestUploadController {
+
     private final Logger logger = LoggerFactory.getLogger(RestUploadController.class);
 
     //Save the uploaded file to this folder
@@ -43,11 +47,8 @@ public class RestUploadController {
         if (uploadfile.isEmpty()) {
             return new ResponseEntity("please select a file!", HttpStatus.OK);
         }
-
         try {
-
             saveUploadedFiles(Arrays.asList(uploadfile));
-
         } catch (IOException e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
@@ -62,7 +63,6 @@ public class RestUploadController {
     public ResponseEntity<?> uploadFileMulti(
             @RequestParam("files") MultipartFile[] uploadFiles) {
 
-        logger.debug("Multiple file upload!");
 
         String uploadedFileName = Arrays.stream(uploadFiles).map(x -> x.getOriginalFilename())
                 .filter(x -> !StringUtils.isEmpty(x)).collect(Collectors.joining(" , "));
@@ -71,19 +71,15 @@ public class RestUploadController {
             return new ResponseEntity("please select a file!", HttpStatus.OK);
         }
 
-
         String textOfFile = "";
         try {
-
             saveUploadedFiles(Arrays.asList(uploadFiles));
             textOfFile = getTextFromFile(UPLOADED_FOLDER + "text.txt");
-
-        } catch (IOException e) {
+        } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
-
-        return new ResponseEntity(""+textOfFile, HttpStatus.OK);
+        return new ResponseEntity(textOfFile, HttpStatus.OK);
     }
 
 

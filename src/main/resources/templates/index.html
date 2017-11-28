@@ -36,7 +36,6 @@
 
 
             <div class="loadedText">
-
                 <form method="POST" enctype="multipart/form-data" id="fileUploadForm">
                     <div class="file-upload">
                         <div class="file-select">
@@ -46,6 +45,9 @@
                         </div>
                     </div>
                     <input  type="submit" value="Submit" id="btnSubmit"/>
+                    <br/>
+                    <label>Digest (SHA-256)</label>
+                    <input id="fileDigest" class="digest" readonly="readonly" size="80"></input>
                 </form>
 
                 <div class="asymmetric-part">

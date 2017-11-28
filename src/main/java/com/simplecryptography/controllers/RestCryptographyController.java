@@ -4,11 +4,18 @@ import com.simplecryptography.domain.Cryptography;
 import com.simplecryptography.domain.Keys;
 import net.minidev.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
 
 @RestController
 public class RestCryptographyController {
@@ -70,5 +77,16 @@ public class RestCryptographyController {
         }
 
         return new ResponseEntity(text,HttpStatus.OK);
+    }
+
+    @PostMapping("/api/digest")
+    public ResponseEntity<?> digest(){
+        String digest = "";
+        try {
+            digest = cryptography.digestFile();
+        } catch (Exception e) {
+            return  new ResponseEntity(HttpStatus.BAD_REQUEST);
+        }
+        return  new ResponseEntity(digest, HttpStatus.OK);
     }
 }

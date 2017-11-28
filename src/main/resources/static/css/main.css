@@ -63,14 +63,19 @@ body {
 .loadedText{
     padding-left: 50px;
     padding-right: 50px;
-    width:90%
+    width:100%
 }
 .asymmetric-part{
     float:left;
-    margin-right: 125px;
+    margin-right: 50px;
 }
 .symmetric-part{
     float:left;
+}
+.digest{
+    margin-top:10px;
+    margin-bottom:10px;
+
 }
 
 /****** CODE ******/

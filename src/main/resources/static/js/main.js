@@ -59,7 +59,67 @@ $('document').ready(function(){
         $("#btnSymmetricDecrypt").addClass("active");
        fire_ajax_symmetric(decrypt);
     });
+
+    $("#btnDigest").click(function (event) {
+        event.preventDefault();
+
+    });
 });
+
+
+function fire_ajax_submit(){
+    //Get Form
+    var form = $("#fileUploadForm")[0];
+    var data = new FormData(form);
+
+    $("#btnSubmit").prop("disabled", true);
+
+    $.ajax({
+        type:"POST",
+        enctype : 'multipart/form-data',
+        url : "/api/upload/multi",
+        data: data,
+        processData: false, //Prevent jQuery from automatically transforming the data into a to a query string
+        contentType: false,
+        cache:false,
+        timeout: 60000,
+
+        success: function(data){
+            if(data=="please select a file!"){
+                $("#btnSubmit").addClass('warning');
+            }
+            else{
+                $("#btnSubmit").removeClass('warning');
+                $("#btnSubmit").addClass('active');
+            }
+
+            $("#btnSubmit").prop("disabled",false);
+            $("#fileTextAsymmetric").val(data);
+            $("#fileTextSymmetric").val(data);
+
+        },
+        error: function(e){
+            $("#result").text(e.resonseText);
+            console.log("ERROR : ",e);
+            $("#btnSubmit").prop("disabled", false);
+        }
+    }).done(function () {
+        fire_ajax_digest();
+    });
+}
+
+function fire_ajax_digest(){
+    $.ajax({
+        type:"POST",
+        url:"/api/digest",
+        success:function (data) {
+            $("#fileDigest").val(data)
+        },
+        error:function(e){
+            console.log("Error: ",e)
+        }
+    });
+}
 
 function fire_ajax_generate_keys(){
     $.ajax({
@@ -108,42 +168,3 @@ function  fire_ajax_asymmetric(operation){
     });
 }
 
-function fire_ajax_submit(){
-    //Get Form
-    var form = $("#fileUploadForm")[0];
-    console.log("Form: "+form);
-
-    var data = new FormData(form);
-    console.log("Data: "+data);
-
-    $("#btnSubmit").prop("disabled", true);
-
-    $.ajax({
-        type:"POST",
-        enctype : 'multipart/form-data',
-        url : "/api/upload/multi",
-        data: data,
-        processData: false, //Prevent jQuery from automatically transofming the data into a to a query string
-        contentType: false,
-        cache:false,
-        timeout: 60000,
-        success: function(data){
-            if(data=="please select a file!"){
-                $("#btnSubmit").addClass('warning');
-            }
-            else{
-                $("#btnSubmit").removeClass('warning');
-                $("#btnSubmit").addClass('active');
-            }
-            $("#btnSubmit").prop("disabled",false);
-            $("#fileTextAsymmetric").val(data);
-            $("#fileTextSymmetric").val(data);
-        },
-        error: function(e){
-            $("#result").text(e.resonseText);
-            console.log("ERROR : ",e);
-            $("#btnSubmit").prop("disabled", false);
-        }
-    });
-
-}

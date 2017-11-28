@@ -1,5 +1,6 @@
 package com.simplecryptography.domain;
 
+import org.apache.commons.codec.binary.Hex;
 import org.springframework.stereotype.Component;
 import sun.misc.BASE64Decoder;
 import sun.misc.BASE64Encoder;
@@ -21,6 +22,8 @@ public class Cryptography {
     private String privateKeyPath = "KeyPair/privateKey";
     private String publicKeyPath = "KeyPair/publicKey";
     private String secretKeyPath = "KeyPair/secretKey";
+    private String fileDigestPath = "MyFiles/digest.txt";
+    private String sourceFilePath = "MyFiles/text.txt";
     private PrivateKey privateKey;
     private PublicKey publicKey;
     private SecretKey secretKey;
@@ -104,11 +107,11 @@ public class Cryptography {
         String text = "Fail in encryption";
         try{
             if(type == ASYMMETRIC){
-                encryptFileAsymmetric(getFileInBytes(new File("MyFiles/text.txt")), new File("MyFiles/text_asymmetric_encrypted.txt"), privateKey);
+                encryptFileAsymmetric(getFileInBytes(new File(sourceFilePath)), new File("MyFiles/text_asymmetric_encrypted.txt"), privateKey);
                 text = getFileText("MyFiles/text_asymmetric_encrypted.txt");
             }
             else if(type==SYMMETRIC){
-                encryptFileSymmetric(getFileInBytes(new File("MyFiles/text.txt")),new File("MyFiles/text_symmetric_encrypted.txt"), secretKey);
+                encryptFileSymmetric(getFileInBytes(new File(sourceFilePath)),new File("MyFiles/text_symmetric_encrypted.txt"), secretKey);
                 text = getFileText("MyFiles/text_symmetric_encrypted.txt");
             }
 
@@ -133,6 +136,15 @@ public class Cryptography {
         }catch (Exception e){}
 
         return text;
+    }
+
+    public String digestFile() throws NoSuchAlgorithmException, IOException, IllegalBlockSizeException, BadPaddingException{
+        MessageDigest digest = MessageDigest.getInstance("SHA-256");
+        byte[] hash = digest.digest(getFileInBytes(new File(sourceFilePath)));
+        String encoded = Hex.encodeHexString(hash);
+        writeToFile(new File(fileDigestPath), encoded);
+
+        return encoded;
     }
 
     private String getFileText(String path) throws  IOException{
