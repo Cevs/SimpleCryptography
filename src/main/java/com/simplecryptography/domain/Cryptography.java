@@ -3,6 +3,7 @@ package com.simplecryptography.domain;
 import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Hex;
 import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.RequestParam;
 import sun.misc.BASE64Decoder;
 import sun.misc.BASE64Encoder;
 
@@ -25,25 +26,36 @@ public class Cryptography {
     private String secretKeyPath = "KeyPair/secretKey";
     private String fileDigestPath = "MyFiles/digest.txt";
     private String sourceFilePath = "MyFiles/text.txt";
+    private String digitalSignaturePath = "MyFiles/digitalSignature.txt";
     private PrivateKey privateKey;
     private PublicKey publicKey;
     private SecretKey secretKey;
+    private MessageDigest digest;
+    private Signature digitalSignature;
     private static final int SYMMETRIC = 1;
     private static final int ASYMMETRIC = 0;
 
-    public Cryptography() { }
+    public Cryptography() {
+        try{
+            this.asymmetricCipher = Cipher.getInstance("RSA");
+            this.symmetricCipher = Cipher.getInstance("AES");
+             digest = MessageDigest.getInstance("SHA-256");
+            digitalSignature = Signature.getInstance("SHA256withRSA");
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
 
     public void InitializeAsymmetric() throws NoSuchAlgorithmException, NoSuchPaddingException, Exception{
-        this.asymmetricCipher = Cipher.getInstance("RSA");
         this.privateKey = getPrivate(privateKeyPath);
         this.publicKey = getPublic(publicKeyPath);
     }
 
     public void InitializeSymmetric() throws NoSuchAlgorithmException, NoSuchPaddingException, Exception{
-        this.symmetricCipher = Cipher.getInstance("AES");
+
         this.secretKey = getSecret(secretKeyPath);
     }
-
 
     private SecretKey getSecret(String path) throws Exception{
         byte[] keyBytes = Files.readAllBytes(new File(path).toPath());
@@ -65,6 +77,7 @@ public class Cryptography {
         return keyFactory.generatePublic(spec);
     }
 
+
     public void encryptFileAsymmetric(byte[] input, File output, PrivateKey privateKey) throws IOException, GeneralSecurityException{
         this.asymmetricCipher.init(Cipher.ENCRYPT_MODE, privateKey);
         writeToFile(output, Hex.encodeHexString(asymmetricCipher.doFinal(input)));
@@ -85,6 +98,14 @@ public class Cryptography {
         writeToFile(output, new String(symmetricCipher.doFinal(Hex.decodeHex(text.toCharArray()))));
     }
 
+    public String signMessage() throws SignatureException, InvalidKeyException, IOException, BadPaddingException, IllegalBlockSizeException {
+        String fileText = getFileText("MyFiles/text.txt");
+        digitalSignature.initSign(privateKey);
+        digitalSignature.update(fileText.getBytes());
+        String signature = Hex.encodeHexString(digitalSignature.sign());
+        writeToFile(new File(digitalSignaturePath), signature);
+        return signature;
+    }
 
 
     private void writeToFile(File output, String text) throws IllegalBlockSizeException, BadPaddingException, IOException{
@@ -139,7 +160,7 @@ public class Cryptography {
     }
 
     public String digestFile() throws NoSuchAlgorithmException, IOException, IllegalBlockSizeException, BadPaddingException{
-        MessageDigest digest = MessageDigest.getInstance("SHA-256");
+
         byte[] hash = digest.digest(getFileInBytes(new File(sourceFilePath)));
         String encoded = Hex.encodeHexString(hash);
         writeToFile(new File(fileDigestPath), encoded);

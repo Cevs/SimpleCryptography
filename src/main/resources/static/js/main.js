@@ -149,6 +149,8 @@ function fire_ajax_symmetric(operation){
         error:function(e){
            console.log("Error: ",e)
         }
+    }).done(function(){
+        fire_ajax_digital_signature();
     });
 }
 
@@ -164,6 +166,21 @@ function  fire_ajax_asymmetric(operation){
         },
         error:function (e) {
             console.log("ERROR : ",e);
+        }
+    }).done(function(){
+        fire_ajax_digital_signature();
+    });
+}
+
+function fire_ajax_digital_signature(){
+    $.ajax({
+        type:"POST",
+        url:"/api/digital-signature",
+        success:function (data) {
+            $("#digitalSignature").val(data)
+        },
+        error:function(e){
+            console.log("Error: ",e)
         }
     });
 }

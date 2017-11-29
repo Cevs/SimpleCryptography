@@ -89,4 +89,16 @@ public class RestCryptographyController {
         }
         return  new ResponseEntity(digest, HttpStatus.OK);
     }
+
+    @PostMapping("/api/digital-signature")
+    public ResponseEntity<?> sign(){
+        String digitalSignature = "";
+        try{
+            digitalSignature = cryptography.signMessage();
+        }catch (Exception e){
+            return  new ResponseEntity(HttpStatus.BAD_REQUEST);
+        }
+
+        return  new ResponseEntity(digitalSignature, HttpStatus.OK);
+    }
 }

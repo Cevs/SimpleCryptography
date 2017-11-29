@@ -49,28 +49,31 @@
                     <label>Digest (SHA-256)</label>
                     <input id="fileDigest" class="digest" readonly="readonly" size="80"></input>
                 </form>
-
-                <div class="asymmetric-part">
-                    <textarea id="fileTextAsymmetric" cols="50" rows="10"></textarea>
-
-                    <form method="post">
-                        <input id="btnAsymmetricEncrypt" type="submit" value="Asymmetric Encrypt" class="button"/>
-                        <input id="btnAsymmetricDecrypt" type="submit" value="Asymmetric Decrypt" class="button"/>
-                    </form>
-                </div>
-                <div class="symmetric-part">
-                    <textarea id="fileTextSymmetric" cols="50" rows="10"></textarea>
-                    <form method = "post">
-                        <input id = "btnSymmetricEncrypt" type="submit" value="Symmetric Encrypt" class="button"/>
-                        <input id = "btnSymmetricDecrypt" type="submit" value="Symmetric Decrypt" class="button"/>
-                    </form>
-                </div>
-
-
             </div>
-            <br></br>
+
+            <div class="asymmetric-part">
+                <textarea id="fileTextAsymmetric" cols="50" rows="10"></textarea>
+
+                <form method="post">
+                    <input id="btnAsymmetricEncrypt" type="submit" value="Asymmetric Encrypt" class="button"/>
+                    <input id="btnAsymmetricDecrypt" type="submit" value="Asymmetric Decrypt" class="button"/>
+                </form>
+            </div>
+            <div class="symmetric-part">
+                <textarea id="fileTextSymmetric" cols="50" rows="10"></textarea>
+                <form method = "post">
+                    <input id = "btnSymmetricEncrypt" type="submit" value="Symmetric Encrypt" class="button"/>
+                    <input id = "btnSymmetricDecrypt" type="submit" value="Symmetric Decrypt" class="button"/>
+                </form>
+            </div>
+
+            <div style="clear:both;"></div>
 
 
+            <div class="lastSection">
+                <label><h3>Digital signature</h3></label>
+                <input id="digitalSignature" class="signature" readonly="readonly" size="80"></input>
+            </div>
 
         </div>
 
