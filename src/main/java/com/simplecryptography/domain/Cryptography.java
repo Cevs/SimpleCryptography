@@ -99,7 +99,7 @@ public class Cryptography {
     }
 
     public String signMessage() throws SignatureException, InvalidKeyException, IOException, BadPaddingException, IllegalBlockSizeException {
-        String fileText = getFileText("MyFiles/text.txt");
+        String fileText = getFileText("MyFiles/digest.txt");
         digitalSignature.initSign(privateKey);
         digitalSignature.update(fileText.getBytes());
         String signature = Hex.encodeHexString(digitalSignature.sign());
