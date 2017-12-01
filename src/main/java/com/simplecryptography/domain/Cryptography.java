@@ -84,13 +84,13 @@ public class Cryptography {
     }
 
 
-    public void encryptFileAsymmetric(byte[] input, File output, PrivateKey privateKey) throws IOException, GeneralSecurityException{
-        this.asymmetricCipher.init(Cipher.ENCRYPT_MODE, privateKey);
+    public void encryptFileAsymmetric(byte[] input, File output, PublicKey publicKey) throws IOException, GeneralSecurityException{
+        this.asymmetricCipher.init(Cipher.ENCRYPT_MODE, publicKey);
         writeToFile(output, Hex.encodeHexString(asymmetricCipher.doFinal(input)));
     }
 
-    public void decryptFileAsymmetric(String text, File output, PublicKey publicKey) throws IOException, GeneralSecurityException, DecoderException {
-        this.asymmetricCipher.init(Cipher.DECRYPT_MODE, publicKey);
+    public void decryptFileAsymmetric(String text, File output, PrivateKey privateKey) throws IOException, GeneralSecurityException, DecoderException {
+        this.asymmetricCipher.init(Cipher.DECRYPT_MODE, privateKey);
         writeToFile(output, new String (asymmetricCipher.doFinal(Hex.decodeHex(text.toCharArray()))));
     }
 
@@ -135,7 +135,7 @@ public class Cryptography {
         String text = "Fail in encryption";
         try{
             if(type == ASYMMETRIC){
-                encryptFileAsymmetric(getFileInBytes(new File(sourceFilePath)), new File("MyFiles/text_asymmetric_encrypted.txt"), privateKey);
+                encryptFileAsymmetric(getFileInBytes(new File(sourceFilePath)), new File("MyFiles/text_asymmetric_encrypted.txt"), publicKey);
                 text = getFileText("MyFiles/text_asymmetric_encrypted.txt");
             }
             else if(type==SYMMETRIC){
@@ -153,7 +153,7 @@ public class Cryptography {
         try {
             if(type == ASYMMETRIC){
 
-                decryptFileAsymmetric(getFileText("MyFiles/text_asymmetric_encrypted.txt"), new File ("MyFiles/text_asymmetric_decrypted.txt"), publicKey);
+                decryptFileAsymmetric(getFileText("MyFiles/text_asymmetric_encrypted.txt"), new File ("MyFiles/text_asymmetric_decrypted.txt"), privateKey);
                 text = getFileText("MyFiles/text_asymmetric_decrypted.txt");
             }
             else if (type==SYMMETRIC){
@@ -181,7 +181,14 @@ public class Cryptography {
         digitalSignature.initVerify(publicKey);
         digitalSignature.update(fileText.getBytes());
 
-        return (digitalSignature.verify(Hex.decodeHex(signature.toCharArray())));
+        boolean match = false;
+
+        //Only check if uploaded file is digital signature file. File need to have length of 256.
+        if(signature.toCharArray().length==256){
+            match = digitalSignature.verify(Hex.decodeHex(signature.toCharArray()));
+        }
+
+        return match;
     }
 
     private String getFileText(String path) throws  IOException{

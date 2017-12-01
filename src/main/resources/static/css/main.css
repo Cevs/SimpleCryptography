@@ -10,7 +10,7 @@ body {
 }
 
 input{
-    border: solid 1px #ddd;
+    border: solid 1px #DCDCDC;
 }
 textarea {
     resize: none;
@@ -18,7 +18,7 @@ textarea {
     font: normal 14px verdana;
     line-height: 25px;
     padding: 2px 10px;
-    border: solid 1px #ddd;
+    border: solid 1px #DCDCDC;
 }
 
 hr{
