@@ -4,6 +4,7 @@ import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Hex;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 import sun.misc.BASE64Decoder;
 import sun.misc.BASE64Encoder;
 
@@ -35,27 +36,32 @@ public class Cryptography {
     private static final int SYMMETRIC = 1;
     private static final int ASYMMETRIC = 0;
 
+    private static byte[] signatureValue;
+
     public Cryptography() {
         try{
             this.asymmetricCipher = Cipher.getInstance("RSA");
             this.symmetricCipher = Cipher.getInstance("AES");
-             digest = MessageDigest.getInstance("SHA-256");
+            digest = MessageDigest.getInstance("SHA-256");
             digitalSignature = Signature.getInstance("SHA256withRSA");
+
         }catch (Exception e) {
             e.printStackTrace();
         }
 
     }
 
-    public void InitializeAsymmetric() throws NoSuchAlgorithmException, NoSuchPaddingException, Exception{
-        this.privateKey = getPrivate(privateKeyPath);
-        this.publicKey = getPublic(publicKeyPath);
+    public void InitializeKeys() {
+        try{
+            this.privateKey = getPrivate(privateKeyPath);
+            this.publicKey = getPublic(publicKeyPath);
+            this.secretKey = getSecret(secretKeyPath);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
     }
 
-    public void InitializeSymmetric() throws NoSuchAlgorithmException, NoSuchPaddingException, Exception{
-
-        this.secretKey = getSecret(secretKeyPath);
-    }
 
     private SecretKey getSecret(String path) throws Exception{
         byte[] keyBytes = Files.readAllBytes(new File(path).toPath());
@@ -103,6 +109,7 @@ public class Cryptography {
         digitalSignature.initSign(privateKey);
         digitalSignature.update(fileText.getBytes());
         String signature = Hex.encodeHexString(digitalSignature.sign());
+        signatureValue = digitalSignature.sign();
         writeToFile(new File(digitalSignaturePath), signature);
         return signature;
     }
@@ -166,6 +173,15 @@ public class Cryptography {
         writeToFile(new File(fileDigestPath), encoded);
 
         return encoded;
+    }
+
+    public boolean checkDigitalSignature(MultipartFile fileText, MultipartFile fileSignature) throws InvalidKeyException, SignatureException, DecoderException, IOException, NoSuchAlgorithmException {
+        String signature = new String(fileSignature.getBytes());
+        digitalSignature = Signature.getInstance("SHA256withRSA");
+        digitalSignature.initVerify(publicKey);
+        digitalSignature.update(fileText.getBytes());
+
+        return (digitalSignature.verify(Hex.decodeHex(signature.toCharArray())));
     }
 
     private String getFileText(String path) throws  IOException{

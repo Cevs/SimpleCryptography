@@ -13,66 +13,114 @@
     </head>
     <body>
         <div class="container">
-            <h2>1.) Generate keys</h2>
-            <label>Secret key:</label>
-            <br></br>
-            <textarea id="secretKey" cols="50" rows="10"  ></textarea>
-            <br></br>
-            <label>Public key:</label>
-            <br></br>
-            <textarea id="publicKey" cols="50" rows="10"></textarea>
-            <br></br>
-            <label>Private key:</label>
-            <br></br>
-            <textarea id="privateKey" cols="50" rows="10"></textarea>
+            <div class="sub-container">
+                <h2>Kreiranje ključeva</h2>
+                <hr/>
+                <form method="post" class="key-container-form">
+                    <div class="key-container">
+                        <label>Tajni ključ</label><br/>
+                        <textarea id="secretKey" cols="50" rows="10" readonly="readonly"></textarea>
+                    </div>
+                    <div class="key-container">
+                        <label>Javni ključ</label><br/>
+                        <textarea id="publicKey" cols="50" rows="10" readonly="readonly"></textarea>
+                    </div>
+                    <div class="key-container">
+                        <label>Privatni ključ</label><br/>
+                        <textarea id="privateKey" cols="50" rows="10" readonly="readonly"></textarea>
+                    </div>
+                    <div style="clear:both;"></div>
+                    <br/>
+                    <input  id ="btnGenerateKeys" type="submit" value="Generate" class="button" />
+                </form>
+                <br></br>
 
-            <form method="post">
-                <input  id ="btnGenerateKeys" type="submit" value="Generate" class="button" />
-            </form>
-            <br></br>
+                <h2>Kriptiranje sadržaja</h2>
+                <hr/>
+                <div class="loadedText">
+                    <form method="POST" enctype="multipart/form-data" id="fileUploadForm">
+                        <div id="original" class="file-upload">
+                            <div class="file-select">
+                                <div class="file-select-button" id="fileName">Choose File</div>
+                                <div class="file-select-name" id="noFile">No file chosen...</div>
+                                <input type="file" name="files" id="chooseFile" class="button"></input>
+                            </div>
+                            <input  type="submit" value="Submit" id="btnSubmit" class="button" style="float:left"/>
+                        </div>
+                        <br/>
+                    </form>
+                    <br/>
 
-            <h2>2.) Kriptiranje sadržaja</h2>
-            <br></br>
-
-
-            <div class="loadedText">
-                <form method="POST" enctype="multipart/form-data" id="fileUploadForm">
-                    <div class="file-upload">
-                        <div class="file-select">
-                            <div class="file-select-button" id="fileName">Choose File</div>
-                            <div class="file-select-name" id="noFile">No file chosen...</div>
-                            <input type="file" name="files" id="chooseFile"></input>
+                    <div class="digest-signature-container-outer">
+                        <div class="digest-signature-container">
+                                <label>Hash (SHA-256):</label>
+                                <input id="fileHash" class="hashInput" readonly="readonly" size="80"></input>
+                                <label>Digital signature (SHA256withRSA): <textarea id="digitalSignature" class="signature" readonly="readonly" rows="2" cols="143" style="overflow: hidden; resize: none"></textarea></label>
                         </div>
                     </div>
-                    <input  type="submit" value="Submit" id="btnSubmit"/>
-                    <br/>
-                    <label>Digest (SHA-256)</label>
-                    <input id="fileDigest" class="digest" readonly="readonly" size="80"></input>
+
+
+                </div>
+
+                <div class="encrypt-decrypt-container">
+                    <div class="asymmetric-part">
+                        <label>Asimetrično</label><br/>
+                        <textarea id="fileTextAsymmetric" cols="50" rows="10"></textarea>
+                        <form method="post">
+                            <input id="btnAsymmetricEncrypt" type="submit" value="Asymmetric Encrypt" class="button"/>
+                            <input id="btnAsymmetricDecrypt" type="submit" value="Asymmetric Decrypt" class="button"/>
+                        </form>
+                    </div>
+                    <div class="symmetric-part">
+                        <label>Simetrično</label><br/>
+                        <textarea id="fileTextSymmetric" cols="50" rows="10"></textarea>
+                        <form method = "post">
+                            <input id = "btnSymmetricEncrypt" type="submit" value="Symmetric Encrypt" class="button"/>
+                            <input id = "btnSymmetricDecrypt" type="submit" value="Symmetric Decrypt" class="button"/>
+                        </form>
+                    </div>
+                    <div style="clear:both;"></div>
+                </div>
+
+                <br></br>
+                <label><h2>Provjera digitalnog potpisa</h2></label>
+                <hr/>
+                <br></br>
+
+                <form methos="POST" enctype="multipart/form-data" id="compareFileUploadForm">
+                    <div  class="loadedText">
+                        <div>
+                            <div id="secondary" class="file-upload">
+                                <div class="file-select">
+                                    <div class="file-select-button" id="secondaryFileName">Original file</div>
+                                    <div class="file-select-name" id="noSecondaryFile">No file chosen...</div>
+                                    <input  type="file" name="files" id="chooseSecondaryFile"/>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <div id = "signature" class="file-upload">
+                                <div class="file-select">
+                                    <div class="file-select-button" id="signatureFileName">Digital signature</div>
+                                    <div class="file-select-name" id="noSignatureFile">No file chosen...</div>
+                                    <input  type="file" name="files" id="chooseSignatureFile"></input>
+                                </div>
+                            </div>
+                        </div>
+                        <input id="btnCheckSignature" type="submit" class="button" value="Check"></input>
+                    </div>
+
                 </form>
-            </div>
 
-            <div class="asymmetric-part">
-                <textarea id="fileTextAsymmetric" cols="50" rows="10"></textarea>
+                <div id="success" class="alert alert-success" >
+                    <strong>Digital signature match !</strong>
+                </div>
 
-                <form method="post">
-                    <input id="btnAsymmetricEncrypt" type="submit" value="Asymmetric Encrypt" class="button"/>
-                    <input id="btnAsymmetricDecrypt" type="submit" value="Asymmetric Decrypt" class="button"/>
-                </form>
-            </div>
-            <div class="symmetric-part">
-                <textarea id="fileTextSymmetric" cols="50" rows="10"></textarea>
-                <form method = "post">
-                    <input id = "btnSymmetricEncrypt" type="submit" value="Symmetric Encrypt" class="button"/>
-                    <input id = "btnSymmetricDecrypt" type="submit" value="Symmetric Decrypt" class="button"/>
-                </form>
-            </div>
+                <div id="error" class="alert alert-danger">
+                    <strong>Digital signature do not match !!</strong>
+                </div>
 
-            <div style="clear:both;"></div>
-
-
-            <div class="lastSection">
-                <label><h3>Digital signature</h3></label>
-                <textarea id="digitalSignature" class="signature" readonly="readonly" rows="2" cols="143" style="overflow: hidden; resize: none"></textarea>
             </div>
         </div>
 

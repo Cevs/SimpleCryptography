@@ -3,6 +3,9 @@ $('document').ready(function(){
     encrypt = "Encrypt";
     decrypt = "Decrypt";
 
+    $("#error").hide();
+    $("#success").hide();
+
     $("#btnGenerateKeys").click(function (event) {
         event.preventDefault();
         fire_ajax_generate_keys();
@@ -11,7 +14,7 @@ $('document').ready(function(){
     $("#chooseFile").bind('change',function () {
         var filename = $("#chooseFile").val();
         if (/^\s*$/.test(filename)) {
-            $(".file-upload").removeClass('active');
+            $("#original").removeClass('active');
             $("#btnSubmit").removeClass('active');
             $("#btnSubmit").removeClass('warning');
             $("#noFile").text("No file chosen...");
@@ -19,7 +22,7 @@ $('document').ready(function(){
             $("#fileTextSymmetric").val("");
         }
         else {
-            $(".file-upload").addClass('active');
+            $("#original").addClass('active');
             $("#noFile").text(filename.replace("C:\\fakepath\\", ""));
         }
     });
@@ -60,11 +63,81 @@ $('document').ready(function(){
        fire_ajax_symmetric(decrypt);
     });
 
-    $("#btnDigest").click(function (event) {
+    $("#btnCheckSignature").click(function (event) {
         event.preventDefault();
-
+        fire_ajax_compare();
     });
+
+
+    $("#chooseSecondaryFile").bind('change',function () {
+        var filename = $("#chooseSecondaryFile").val();
+        if (/^\s*$/.test(filename)) {
+            $("#secondary").removeClass('active');
+            $("#btnSubmitSecondary").removeClass('active');
+            $("#btnSubmitSecondaryn").removeClass('warning');
+            $("#noSecondaryFile").text("No file chosen...");
+
+        }
+        else {
+            $("#secondary").addClass('active');
+            $("#noSecondaryFile").text(filename.replace("C:\\fakepath\\", ""));
+        }
+    });
+
+
+    $("#chooseSignatureFile").bind('change',function () {
+        var filename = $("#chooseSignatureFile").val();
+        if (/^\s*$/.test(filename)) {
+            $("#signature").removeClass('active');
+            $("#btnSubmitSignature").removeClass('active');
+            $("#btnSubmitSignature").removeClass('warning');
+            $("#noSignatureFileFile").text("No file chosen...");
+
+        }
+        else {
+            $("#signature").addClass('active');
+            $("#noSignatureFile").text(filename.replace("C:\\fakepath\\", ""));
+        }
+    });
+
+
 });
+
+function fire_ajax_compare(){
+    var form = $("#compareFileUploadForm")[0];
+    var formData = new FormData(form);
+
+    var name1 = $("#chooseSignatureFile").val();
+    var name2 = $("#chooseSecondaryFile").val();
+
+    if(name1 != "" && name2 != ""){
+        $.ajax({
+            type:"POST",
+            enctype:"multipart/form-data",
+            url:"/api/check-signature",
+            data:formData,
+            processData: false,
+            contentType: false,
+            cache:false,
+            timeout: 60000,
+            success:function(data){
+                if(data == true){
+                    $("#error").hide();
+                    $("#success").show();
+                }
+                else{
+                    $("#success").hide();
+                    $("#error").show();
+                }
+            },
+            error:function (e) {
+                console.log("ERROR : ",e);
+                $("#btnSubmitDigitalSignature").prop("disabled", false);
+            }
+        });
+    }
+}
+
 
 
 function fire_ajax_submit(){
@@ -99,27 +172,30 @@ function fire_ajax_submit(){
 
         },
         error: function(e){
-            $("#result").text(e.resonseText);
             console.log("ERROR : ",e);
             $("#btnSubmit").prop("disabled", false);
         }
     }).done(function () {
-        fire_ajax_digest();
+        fire_ajax_hash();
+    });
+
+}
+
+function fire_ajax_hash() {
+    $.ajax({
+        type: "POST",
+        url: "/api/hash",
+        success: function (data) {
+            $("#fileHash").val(data);
+        },
+        error: function (e) {
+            console.log("Error: ", e);
+        }
+    }).done(function () {
+        fire_ajax_digital_signature();
     });
 }
 
-function fire_ajax_digest(){
-    $.ajax({
-        type:"POST",
-        url:"/api/digest",
-        success:function (data) {
-            $("#fileDigest").val(data)
-        },
-        error:function(e){
-            console.log("Error: ",e)
-        }
-    });
-}
 
 function fire_ajax_generate_keys(){
     $.ajax({
@@ -149,9 +225,7 @@ function fire_ajax_symmetric(operation){
         error:function(e){
            console.log("Error: ",e)
         }
-    }).done(function(){
-        fire_ajax_digital_signature();
-    });
+    })
 }
 
 function  fire_ajax_asymmetric(operation){
@@ -167,9 +241,7 @@ function  fire_ajax_asymmetric(operation){
         error:function (e) {
             console.log("ERROR : ",e);
         }
-    }).done(function(){
-        fire_ajax_digital_signature();
-    });
+    })
 }
 
 function fire_ajax_digital_signature(){

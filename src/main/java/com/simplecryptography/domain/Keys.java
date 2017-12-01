@@ -44,7 +44,6 @@ public class Keys {
 
     public void generateKeys(){
         try{
-
             createPublicPrivateKeys();
             createSecretKey();
 

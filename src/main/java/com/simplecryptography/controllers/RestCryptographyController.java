@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
@@ -42,13 +43,13 @@ public class RestCryptographyController {
         jsonObject.put("PublicKey", keys.getPublicKey());
         jsonObject.put("PrivateKey", keys.getPrivateKey());
 
+        cryptography.InitializeKeys();
         return new ResponseEntity(jsonObject, HttpStatus.OK);
     }
 
     @PostMapping("/api/asymmetric")
     public ResponseEntity<?> asymmetric(@RequestParam("operation") String operation){
         try{
-            cryptography.InitializeAsymmetric();
             if(operation.equals("Encrypt")){
                 text = cryptography.encryptFile(0);
             }
@@ -65,7 +66,6 @@ public class RestCryptographyController {
     @PostMapping("/api/symmetric")
     public ResponseEntity<?> symmetric(@RequestParam("operation") String operation){
         try{
-            cryptography.InitializeSymmetric();
             if(operation.equals("Encrypt")){
                 text = cryptography.encryptFile(1);
             }
@@ -79,7 +79,7 @@ public class RestCryptographyController {
         return new ResponseEntity(text,HttpStatus.OK);
     }
 
-    @PostMapping("/api/digest")
+    @PostMapping("/api/hash")
     public ResponseEntity<?> digest(){
         String digest = "";
         try {
@@ -100,5 +100,18 @@ public class RestCryptographyController {
         }
 
         return  new ResponseEntity(digitalSignature, HttpStatus.OK);
+    }
+
+    @PostMapping("/api/check-signature")
+    public ResponseEntity<?>checkDigitalSignature(
+            @RequestParam("files")MultipartFile[] files)
+    {
+        boolean match = false;
+        try{
+            match = cryptography.checkDigitalSignature(files[0], files[1]);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return new ResponseEntity(match, HttpStatus.OK);
     }
 }

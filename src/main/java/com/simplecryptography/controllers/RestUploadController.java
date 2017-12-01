@@ -35,28 +35,6 @@ public class RestUploadController {
     //Save the uploaded file to this folder
     private static String UPLOADED_FOLDER = "MyFiles/";
 
-    //Single file upload
-    @PostMapping("/api/upload")
-    // If not @RestController, uncomment this
-    //@ResponseBody
-    public ResponseEntity<?> uploadFile(
-            @RequestParam("file") MultipartFile uploadfile) {
-
-        logger.debug("Single file upload!");
-
-        if (uploadfile.isEmpty()) {
-            return new ResponseEntity("please select a file!", HttpStatus.OK);
-        }
-        try {
-            saveUploadedFiles(Arrays.asList(uploadfile));
-        } catch (IOException e) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-
-        return new ResponseEntity("Successfully uploaded - " +
-                uploadfile.getOriginalFilename(), new HttpHeaders(), HttpStatus.OK);
-
-    }
 
     // Multiple file upload
     @PostMapping("/api/upload/multi")
@@ -80,6 +58,31 @@ public class RestUploadController {
         }
 
         return new ResponseEntity(textOfFile, HttpStatus.OK);
+    }
+
+
+    //Single file upload
+    @PostMapping("/api/upload/digital-signature")
+    public ResponseEntity<?> uploadFileCheck(
+            @RequestParam("files") MultipartFile[] uploadFiles) {
+
+        String uploadedFileName = Arrays.stream(uploadFiles).map(x -> x.getOriginalFilename())
+                .filter(x -> !StringUtils.isEmpty(x)).collect(Collectors.joining(" , "));
+
+        if (StringUtils.isEmpty(uploadedFileName)) {
+            return new ResponseEntity("please select a file!", HttpStatus.OK);
+        }
+
+        String content = "";
+        try {
+            content = new String(uploadFiles[0].getBytes());
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+
+        return new ResponseEntity(content,HttpStatus.OK);
+
     }
 
 
