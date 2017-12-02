@@ -54,8 +54,8 @@
                     <div class="digest-signature-container-outer">
                         <div class="digest-signature-container">
                                 <label>Hash (SHA-256):</label>
-                                <input id="fileHash" class="hashInput" readonly="readonly" size="80"></input>
-                                <label>Digital signature (SHA256withRSA): <textarea id="digitalSignature" class="signature" readonly="readonly" rows="2" cols="143" style="overflow: hidden; resize: none"></textarea></label>
+                                <input id="fileHash" class="hashInput" readonly="readonly" size="65"></input>
+                                <label>Digital signature (SHA256withRSA): <textarea id="digitalSignature" class="signature" rows="2" cols="120" readonly="readonly" style="overflow: hidden; resize: none"></textarea></label>
                         </div>
                     </div>
 
@@ -113,18 +113,30 @@
 
                 </form>
 
-                <div id="success" class="alert alert-success" >
-                    <strong>Digital signature match !</strong>
+                <div class="signature-notification">
+                    <div id="success" class="alert alert-success signature-notification" >
+                        <strong>Digital signature match !</strong>
+                    </div>
                 </div>
 
-                <div id="error" class="alert alert-danger">
-                    <strong>Digital signature do not match !!</strong>
-                </div>
+               <div class="signature-notification">
+                   <div id="error" class="alert alert-danger signature-notification">
+                       <strong>Digital signature do not match !!</strong>
+                   </div>
+               </div>
+
 
             </div>
         </div>
+        <div class="footer">
+            <div class="footer-text">&copy; Alen Martinečvić</div>
+        </div>
 
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous"></script>
     </body>
+
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous"></script>
+
 </html>
